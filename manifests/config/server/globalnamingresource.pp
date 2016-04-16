@@ -49,6 +49,8 @@ define tomcat::config::server::globalnamingresource (
     $changes = delete_undef_values(flatten([ $_additional_attributes, $_attributes_to_remove ]))
   }
 
+  notify{"globalnamingreource changes ${changes}"}
+
   augeas { "server-${catalina_base}-globalresource-${name}":
     lens    => 'Xml.lns',
     incl    => $_server_config,
