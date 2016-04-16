@@ -49,7 +49,8 @@ define tomcat::config::server::globalnamingresource (
     $changes = delete_undef_values(flatten([ $_additional_attributes, $_attributes_to_remove ]))
   }
 
-  file {"/tmp/globalnamingresource-${name}.aug": content=>$changes }
+  $tmpfilename = regsubst($name, '/', '__', 'G')
+  file {"/tmp/globalnamingresource-${tmpfilename}.aug": content=>$changes }
 
   augeas { "server-${catalina_base}-globalresource-${name}":
     lens    => 'Xml.lns',
