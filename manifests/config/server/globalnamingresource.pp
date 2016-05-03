@@ -37,10 +37,12 @@ define tomcat::config::server::globalnamingresource (
   } else {
     ## make the object
     $_make_path = "set Server/GlobalNamingResources/Resource[#attribute/name='${name}']/#attribute/name '${name}'"
+    notify{"make the path ${_make_path}":}
     if ! empty($additional_attributes) {
-      notify{"joining ${additional_attributes}":}
-      $_additional_attributes = suffix(prefix(join_keys_to_values($additional_attributes, " '\nset ${base_path}/#attribute/"), "set ${base_path}/#attribute/"), "'")
-      notify{"getting ${_additional_attributes}":}
+      $__aa1 = prefix($additional_attributes, "set ${base_path}/#attribute/")
+      notify{"prefixed additional_attributes ${__aa1}"}
+      $_additional_attributes = join_keys_to_values($__aa1, " '")
+      notify{"joined additional_attributes ${_additional_attributes}"}
     } else {
       $_additional_attributes = undef
     }
@@ -57,10 +59,10 @@ define tomcat::config::server::globalnamingresource (
   $tmpfilename = regsubst($name, '/', '__', 'G')
   file {"/tmp/globalnamingresource-${tmpfilename}.aug-${timestamp}": content=>$changes }
 
-  augeas { "server-${catalina_base}-globalresource-${name}":
-    lens    => 'Xml.lns',
-    incl    => $_server_config,
-    changes => "${_make_path}\n${changes}\n",
-    require => File[$_server_config],
-  }
+#  augeas { "server-${catalina_base}-globalresource-${name}":
+#    lens    => 'Xml.lns',
+#    incl    => $_server_config,
+#    changes => "${_make_path}\n${changes}\n",
+#    require => File[$_server_config],
+#  }
 }
