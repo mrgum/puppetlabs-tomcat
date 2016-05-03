@@ -35,8 +35,12 @@ define tomcat::config::server::globalnamingresource (
   if $resource_ensure =~ /^(absent|false)$/ {
     $changes = "rm ${base_path}"
   } else {
+    ## make the object
+    "set Server/GlobalNamingResources/Resource[#attribute/name='${name}']/#attribute/name '${name}'"
     if ! empty($additional_attributes) {
-      $_additional_attributes = suffix(prefix(join_keys_to_values($additional_attributes, " '"), "set ${base_path}/#attribute/"), "'")
+      notify{"joining ${additional_attributes}":}
+      $_additional_attributes = suffix(prefix(join_keys_to_values($additional_attributes, " '\nset ${base_path}/#attribute/"), "set ${base_path}/#attribute/"), "'")
+      notify{"getting ${_additional_attributes}":}
     } else {
       $_additional_attributes = undef
     }
