@@ -36,7 +36,7 @@ define tomcat::config::server::globalnamingresource (
     $changes = "rm ${base_path}"
   } else {
     ## make the object
-    "set Server/GlobalNamingResources/Resource[#attribute/name='${name}']/#attribute/name '${name}'"
+    $_make_path = "set Server/GlobalNamingResources/Resource[#attribute/name='${name}']/#attribute/name '${name}'"
     if ! empty($additional_attributes) {
       notify{"joining ${additional_attributes}":}
       $_additional_attributes = suffix(prefix(join_keys_to_values($additional_attributes, " '\nset ${base_path}/#attribute/"), "set ${base_path}/#attribute/"), "'")
@@ -60,7 +60,7 @@ define tomcat::config::server::globalnamingresource (
   augeas { "server-${catalina_base}-globalresource-${name}":
     lens    => 'Xml.lns',
     incl    => $_server_config,
-    changes => $changes,
+    changes => "${_make_path}\n${changes}\n",
     require => File[$_server_config],
   }
 }
