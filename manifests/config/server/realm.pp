@@ -99,6 +99,7 @@ define tomcat::config::server::realm (
     lens    => 'Xml.lns',
     incl    => $_server_config,
     changes => $changes,
+    require => File[$_server_config],
   }
 
 }
