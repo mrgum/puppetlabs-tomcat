@@ -37,10 +37,9 @@ define tomcat::config::server::globalnamingresource (
   } else {
     ## make the object
     $_make_path = "set Server/GlobalNamingResources/Resource[#attribute/name='${name}']/#attribute/name '${name}'"
-    notify{"make the path ${_make_path}":}
     if ! empty($additional_attributes) {
       $_additional_attributes = join(suffix(join_keys_to_values(prefix(delete($additional_attributes,'name'), "set ${base_path}/#attribute/"), " '"),"'"),"\n")
-      notify{"joined additional_attributes ${_additional_attributes}":}
+      #notify{"joined additional_attributes ${_additional_attributes}":}
     } else {
       $_additional_attributes = undef
     }
