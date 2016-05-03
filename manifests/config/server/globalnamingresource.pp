@@ -39,18 +39,19 @@ define tomcat::config::server::globalnamingresource (
     $_make_path = "set Server/GlobalNamingResources/Resource[#attribute/name='${name}']/#attribute/name '${name}'"
     notify{"make the path ${_make_path}":}
     if ! empty($additional_attributes) {
-      $_additional_attributes = join(suffix(join_keys_to_values(prefix($additional_attributes, "set ${base_path}/#attribute/"), " '"),"'"),"\n")
-      #notify{"joined additional_attributes ${_additional_attributes}":}
+      $_additional_attributes = join(suffix(join_keys_to_values(prefix(delete($additional_attributes,'name'), "set ${base_path}/#attribute/"), " '"),"'"),"\n")
+      notify{"joined additional_attributes ${_additional_attributes}":}
     } else {
       $_additional_attributes = undef
     }
     if ! empty(any2array($attributes_to_remove)) {
-      $_attributes_to_remove = prefix(any2array($attributes_to_remove), "rm ${base_path}/#attribute/")
+      $_additional_attributes = join(keys(prefix($additional_attributes, "rm ${base_path}/#attribute/")),"\n")
     } else {
       $_attributes_to_remove = undef
     }
 
-    $changes = delete_undef_values(flatten([ $_additional_attributes, $_attributes_to_remove ]))
+    $_changes = delete_undef_values(flatten([ $_additional_attributes, $_attributes_to_remove ]))
+    $changes = "${_make_path}\n${_changes}"
   }
 
   $timestamp = generate('/bin/date', '+%Y%d%m_%H:%M:%S:%N')
@@ -60,7 +61,7 @@ define tomcat::config::server::globalnamingresource (
   augeas { "server-${catalina_base}-globalresource-${name}":
     lens    => 'Xml.lns',
     incl    => $_server_config,
-    changes => "${_make_path}\n${changes}\n",
+    changes => $changes,
     require => File[$_server_config],
   }
 }
