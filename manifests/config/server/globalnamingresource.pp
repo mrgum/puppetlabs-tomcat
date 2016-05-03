@@ -40,7 +40,7 @@ define tomcat::config::server::globalnamingresource (
     notify{"make the path ${_make_path}":}
     if ! empty($additional_attributes) {
       $_additional_attributes = join(suffix(join_keys_to_values(prefix($additional_attributes, "set ${base_path}/#attribute/"), " '"),"'"),"\n")
-      notify{"joined additional_attributes ${_additional_attributes}":}
+      #notify{"joined additional_attributes ${_additional_attributes}":}
     } else {
       $_additional_attributes = undef
     }
