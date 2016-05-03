@@ -40,9 +40,9 @@ define tomcat::config::server::globalnamingresource (
     notify{"make the path ${_make_path}":}
     if ! empty($additional_attributes) {
       $__aa1 = prefix($additional_attributes, "set ${base_path}/#attribute/")
-      notify{"prefixed additional_attributes ${__aa1}"}
+      notify{"prefixed additional_attributes ${__aa1}":}
       $_additional_attributes = join_keys_to_values($__aa1, " '")
-      notify{"joined additional_attributes ${_additional_attributes}"}
+      notify{"joined additional_attributes ${_additional_attributes}":}
     } else {
       $_additional_attributes = undef
     }
