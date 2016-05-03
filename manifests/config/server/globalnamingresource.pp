@@ -41,7 +41,7 @@ define tomcat::config::server::globalnamingresource (
     if ! empty($additional_attributes) {
       $__aa1 = prefix($additional_attributes, "set ${base_path}/#attribute/")
       notify{"prefixed additional_attributes ${__aa1}":}
-      $_additional_attributes = join_keys_to_values($__aa1, " '")
+      $_additional_attributes = join(suffix(join_keys_to_values($__aa1, " '"),"'"),"\n")
       notify{"joined additional_attributes ${_additional_attributes}":}
     } else {
       $_additional_attributes = undef
